@@ -1,0 +1,16 @@
+{
+    "name": "lovro/phpframework",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Lovro\\Phpframework\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lovro Pokrajcic",
+            "email": "lovro.pokrajcic@factory.dev"
+        }
+    ],
+    "require": {}
+}
