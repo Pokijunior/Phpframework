@@ -2,15 +2,17 @@
 
 require_once 'vendor/autoload.php';
 
-use Lovro\Phpframework\Response\JsonResponse;
 use Lovro\Phpframework\Router;
 use Lovro\Phpframework\Request;
+use Lovro\Phpframework\Response\JsonResponse;
+use Lovro\Phpframework\Controllers\IndexController;
 
 
 $request = new Request();
 
 $router = new Router();
 
+$indexController = new IndexController();
 
 require_once 'routes.php';
 
