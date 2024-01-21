@@ -8,24 +8,24 @@ use Lovro\Phpframework\Interfaces\ResponseInterface;
 
 class Router
 {
-    private $routes = [];
+    private static $routes = [];
 
-    public function addRoute($pattern, $callback)
+    public static function addRoute($pattern, $callback)
     {
-        $this->routes[$pattern] = $callback;
+        self::$routes[$pattern] = $callback;
     }
 
-    public function resolve(RequestInterface $request): ResponseInterface
+    public static function resolve(RequestInterface $request): ResponseInterface
     {
         $url = $_SERVER['REQUEST_URI'];
         
-        foreach ($this->routes as $pattern => $callback) {
+        foreach (self::$routes as $pattern => $callback) {
             $pattern = str_replace('/', '\/', $pattern);
             
             if (preg_match('/^' . $pattern . '$/', $url, $matches)) {
                 array_shift($matches);
                 $content = call_user_func_array($callback, array_merge([$request], $matches));
-                return new Response($content);
+                return $content;
             }
         }
 

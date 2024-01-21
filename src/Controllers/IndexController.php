@@ -7,12 +7,12 @@ use Lovro\Phpframework\Response\JsonResponse;
 
 class IndexController
 {
-    public function indexAction($request)
+    public static function indexAction($request)
     {
         return new Response('This is a regular response from indexAction.');
     }
 
-    public function indexJsonAction($request)
+    public static function indexJsonAction($request)
     {
         $data = ['message' => 'This is a JSON response from indexJsonAction.'];
         return new JsonResponse($data);

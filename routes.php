@@ -1,27 +1,32 @@
 <?php
+use Lovro\Phpframework\Router;
+use Lovro\Phpframework\Controllers\IndexController;
 
 
-$router->addRoute('/', function ($request) {
-    return 'Home page';
-});
+// Router::addRoute('/', function ($request) {
+//     return 'Home page';
+// });
 
-$router->addRoute('/contact', function ($request) {
+Router::addRoute('/contact', function ($request) {
     return 'Contact us page';
 });
 
-$router->addRoute('/about', function ($request) {
+Router::addRoute('/about', function ($request) {
     return 'About us page';
 });
 
-$router->addRoute('/products', function ($request) {
+Router::addRoute('/products', function ($request) {
     return 'Products page';
 });
 
-$router->addRoute('/products/(\d+)', function ($request, $productId) {
+Router::addRoute('/products/(\d+)', function ($request, $productId) {
     return "Prikaz proizvoda s ID-jem: $productId";
 });
 
-$router->addRoute('/', [$indexController, 'indexAction']);
-$router->addRoute('/json', [$indexController, 'indexJsonAction']);
+// Router::addRoute('/', [$indexController, 'indexAction']); //controller::class
+// Router::addRoute('/json', [$indexController, 'indexJsonAction']);
+Router::addRoute('/', [IndexController::class, 'indexAction']);
+Router::addRoute('/json', [IndexController::class, 'indexJsonAction']);
 
-// $router->addRoute('/products/{productId}', [$controller, 'indexJsonAction']);
+
+// Router::addRoute('/products/{productId}', [$controller, 'indexJsonAction']);
