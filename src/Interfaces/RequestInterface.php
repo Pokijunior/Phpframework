@@ -4,5 +4,6 @@ namespace Lovro\Phpframework\Interfaces;
 
 interface RequestInterface
 {
-    public function getParams(): array;
+    public function getUri(): string;
+    public function getMethod(): string;
 }

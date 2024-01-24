@@ -12,5 +12,7 @@
             "email": "lovro.pokrajcic@factory.dev"
         }
     ],
-    "require": {}
+    "require": {
+        "twig/twig": "^3.8"
+    }
 }

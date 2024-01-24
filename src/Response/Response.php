@@ -15,6 +15,6 @@ class Response implements ResponseInterface
 
     public function send(): string
     {
-        return $this->content;
+        return $this->content;        
     }
 }

@@ -7,15 +7,23 @@ use Lovro\Phpframework\Interfaces\RequestInterface;
 
 class Request implements RequestInterface
 {
-    private $params;
+    private string $uri;
+    private string $method;
 
     public function __construct()
     {
-        $this->params = array_merge($_GET, $_POST);
+        $this->uri = $_SERVER['REQUEST_URI'];
+        $this->method = strtoupper($_SERVER["REQUEST_METHOD"]);
     }
 
-    public function getParams(): array
+    public function getUri(): string
     {
-        return $this->params;
+        return $this->uri;
     }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
 }

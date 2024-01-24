@@ -10,26 +10,33 @@ class Router
 {
     private static $routes = [];
 
-    public static function addRoute($pattern, $callback)
-    {
-        self::$routes[$pattern] = $callback;
+    public static function add($method, $uri, $callback) {
+        self::$routes[] = [
+            'uri' => $uri,
+            'method' => $method,
+            'callback' => $callback
+        ];
+    }
+    public static function get($uri, $callback) {
+        self::add('GET', $uri, $callback);
+    }
+
+    public static function post($uri, $callback) {
+        self::add('POST', $uri, $callback);
     }
 
     public static function resolve(RequestInterface $request): ResponseInterface
     {
-        $url = $_SERVER['REQUEST_URI'];
-        
-        foreach (self::$routes as $pattern => $callback) {
-            $pattern = str_replace('/', '\/', $pattern);
-            
-            if (preg_match('/^' . $pattern . '$/', $url, $matches)) {
-                array_shift($matches);
-                $content = call_user_func_array($callback, array_merge([$request], $matches));
-                return $content;
+        $uri = $request->getUri();
+        $method = $request->getMethod();
+        foreach (self::$routes as $route) {
+            $match = Route::match($route, $uri, $method);
+
+            if ($match) {
+                return call_user_func($route['callback'], $request); //zašto request
             }
         }
 
-        $content = '404 Not Found';
-        return new Response($content);
+        return new Response('404 Not Found');
     }
 }
