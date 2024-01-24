@@ -16,12 +16,12 @@ class Request implements RequestInterface
         $this->method = strtoupper($_SERVER["REQUEST_METHOD"]);
     }
 
-    public function getUri(): string
+    public function Uri(): string
     {
         return $this->uri;
     }
 
-    public function getMethod(): string
+    public function Method(): string
     {
         return $this->method;
     }

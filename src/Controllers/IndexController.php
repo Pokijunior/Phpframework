@@ -9,7 +9,7 @@ class IndexController
 {
     public static function indexAction($request)
     {
-        return new Response('This is a regular response from indexAction.');
+        return new Response('This is a normal response from indexAction.');
     }
 
     public static function indexJsonAction($request)

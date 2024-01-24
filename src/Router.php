@@ -27,8 +27,8 @@ class Router
 
     public static function resolve(RequestInterface $request): ResponseInterface
     {
-        $uri = $request->getUri();
-        $method = $request->getMethod();
+        $uri = $request->Uri();
+        $method = $request->Method();
         foreach (self::$routes as $route) {
             $match = Route::match($route, $uri, $method);
 
