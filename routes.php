@@ -10,18 +10,11 @@ Router::add('GET', '/', function (Request $request): Response
     return new Response('Home');
 });
 
-// Router::add('GET', '/products', function (Request $request): Response
-// {
-//     return new Response('Products');
-// });
-
-Router::get('/products', function (Request $request): JsonResponse
+Router::add('GET', '/products', function (Request $request): Response
 {
-    return new JsonResponse(
-        [
-            'data' => 'products'
-        ]);
+    return new Response('Products');
 });
+
 
 Router::add('GET', '/normal',[IndexController::class, 'indexAction']);
 Router::add('GET', '/json',[IndexController::class, 'indexJsonAction']);

@@ -29,6 +29,7 @@ class Router
     {
         $uri = $request->Uri();
         $method = $request->Method();
+        var_dump($request->getParams());
         foreach (self::$routes as $route) {
             $match = Route::match($route, $uri, $method);
 
