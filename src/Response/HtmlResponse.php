@@ -1,20 +1,18 @@
 <?php
 
 namespace Lovro\Phpframework\Response;
-
 use Lovro\Phpframework\Interfaces\ResponseInterface;
 
-class JsonResponse implements ResponseInterface
-{
-    private $contet;
+class HtmlResponse implements ResponseInterface{
+    private $content;
 
     public function __construct($content)
     {
-        $this->contet = $content;
+        $this->content = $content;
     }
 
     public function send(): string
     {
-        return json_encode($this->contet);
+        return $this->content;        
     }
 }

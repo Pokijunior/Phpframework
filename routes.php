@@ -24,3 +24,4 @@ Route::add('GET', '/products/{productId}', function (Request $request, $params):
 
 Route::add('GET', '/normal',[IndexController::class, 'indexAction']);
 Route::add('GET', '/json',[IndexController::class, 'indexJsonAction']);
+Route::add('GET', '/html',[IndexController::class, 'indexHtmlAction']);
