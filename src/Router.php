@@ -9,21 +9,9 @@ use Lovro\Phpframework\Interfaces\ResponseInterface;
 class Router
 {
     private static $routes = [];
-    public static function addRoute($method, $uri, $callback)
+    public static function addRoute(Route $route)
     {
-        self::$routes[] = [
-            'method' => $method,
-            'uri' => $uri,
-            'callback' => $callback
-        ];
-    }
-
-    public static function get($uri, $callback) {
-        self::addRoute('GET', $uri, $callback);
-    }
-
-    public static function post($uri, $callback) {
-        self::addRoute('POST', $uri, $callback);
+        self::$routes[] = $route;
     }
 
     public static function resolve(RequestInterface $request): ResponseInterface
@@ -34,8 +22,8 @@ class Router
         foreach (self::$routes as $route) {
             $result = Route::match($route, $uri, $method);
             if ($result['match']) {
-                $params = $result['params'];
-                return call_user_func($route['callback'], $request, $params);
+                $params = [$request, $result['params']];
+                return call_user_func_array($route->getCallback(), $params); //
             }
         }
 
