@@ -2,9 +2,6 @@
 
 namespace Lovro\Phpframework;
 
-use Lovro\Phpframework\Interfaces\RequestInterface;
-use Lovro\Phpframework\Interfaces\ResponseInterface;
-
 
 class Route {
 
@@ -14,34 +11,28 @@ class Route {
 
     public static function match($route, $uri, $method)
     {
-        if ($route['uri'] === $uri && $route['method'] === strtoupper($method)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+        $routeUriParts = explode('/', trim($route['uri'], '/'));
+        $uriParts = explode('/', trim($uri, '/'));
 
-    public static function matchParams($routeUri, $uriParts, $params)
-    {
-        if (count((array)$routeUri) != count($uriParts)) {
-            return false;
+        if (count($routeUriParts) !== count($uriParts)) {
+            return ['match' => false];
         }
 
         $params = [];
-
-        for ($i = 0; $i < count($uriParts); $i++) {
-
-            if ($uriParts[$i][0] === '{' && $uriParts[$i][strlen($uriParts[$i])-1] === '}') {
-                $paramName = trim($uriParts[$i], '{}');
-                $params[$paramName] = $routeUri[$i];
-                continue;
+        foreach ($routeUriParts as $key => $part) {
+            if ($part !== $uriParts[$key] && strpos($part, '{') === false) {
+                return ['match' => false];
             }
 
-            if ($uriParts[$i]!== $routeUri[$i]) {
-                return false;
+            if (strpos($part, '{') !== false) {
+                $paramName = trim($part, '{}');
+                $params[$paramName] = $uriParts[$key];
             }
         }
 
-        return true;
+        return [
+            'match' => true,
+            'params' => $params,
+        ];
     }
 }

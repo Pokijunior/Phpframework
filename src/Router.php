@@ -28,14 +28,14 @@ class Router
 
     public static function resolve(RequestInterface $request): ResponseInterface
     {
-        // $uriParts = $request->getParams();
         $uri = $request->Uri();
         $method = $request->Method();
-        foreach (self::$routes as $route) {
-            $match = Route::match($route, $uri, $method);
 
-            if ($match) {
-                return call_user_func($route['callback'], $request);
+        foreach (self::$routes as $route) {
+            $result = Route::match($route, $uri, $method);
+            if ($result['match']) {
+                $params = $result['params'];
+                return call_user_func($route['callback'], $request, $params);
             }
         }
 
