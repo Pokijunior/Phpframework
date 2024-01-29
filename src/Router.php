@@ -2,6 +2,7 @@
 
 namespace Lovro\Phpframework;
 
+use Lovro\Phpframework\Route;
 use Lovro\Phpframework\Response\Response;
 use Lovro\Phpframework\Interfaces\RequestInterface;
 use Lovro\Phpframework\Interfaces\ResponseInterface;
@@ -14,6 +15,13 @@ class Router
         self::$routes[] = $route;
     }
 
+    // public static function get($uri, $callback) {
+    //     Route::add('GET', $uri, $callback);
+    // }
+    // public static function post($uri, $callback) {
+    //     Route::add('POST', $uri, $callback);
+    // }
+    
     public static function resolve(RequestInterface $request): ResponseInterface
     {
         $uri = $request->Uri();
