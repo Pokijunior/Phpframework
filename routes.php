@@ -5,11 +5,6 @@ use Lovro\Phpframework\Response\Response;
 use Lovro\Phpframework\Response\JsonResponse;
 use Lovro\Phpframework\Controllers\IndexController;
 
-// Router::get('/', function (Request $request): Response
-// {
-//     return new Response('Home');
-// });
-
 Route::get('/', function (Request $request): Response
 {
     return new Response('Home');

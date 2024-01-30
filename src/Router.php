@@ -14,17 +14,10 @@ class Router
     {
         self::$routes[] = $route;
     }
-
-    // public static function get($uri, $callback) {
-    //     Route::add('GET', $uri, $callback);
-    // }
-    // public static function post($uri, $callback) {
-    //     Route::add('POST', $uri, $callback);
-    // }
     
     public static function resolve(RequestInterface $request): ResponseInterface
     {
-        $uri = $request->Uri();
+        $uri = parse_url($request->Uri())['path'];
         $method = $request->Method();
 
         foreach (self::$routes as $route) {
