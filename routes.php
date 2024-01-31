@@ -34,3 +34,7 @@ Route::get('/products/{productId}/{productName}', function (Request $request, $p
 
 Route::get('/normal',[IndexController::class, 'indexAction']);
 Route::get('/json',[IndexController::class, 'indexJsonAction']);
+
+Route::get('/select/{id}',[IndexController::class, 'indexSelectAction']);
+Route::get('/insert/{id}/{name}',[IndexController::class, 'indexInsertAction']);
+Route::get('/update/{name}/{id}',[IndexController::class, 'indexUpdateAction']);

@@ -29,9 +29,9 @@ class Connection {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
-                $statement->bindValue($key + 1, $value); // Indexed placeholder
+                $statement->bindValue($key + 1, $value);
             } else {
-                $statement->bindValue($key, $value); // Named placeholder
+                $statement->bindValue($key, $value);
             }
         }
 
@@ -43,9 +43,22 @@ class Connection {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
-                $statement->bindValue($key + 1, $value); // Indexed placeholder
+                $statement->bindValue($key + 1, $value);
             } else {
-                $statement->bindValue($key, $value); // Named placeholder
+                $statement->bindValue($key, $value);
+            }
+        }
+        $statement->execute();
+        return $statement;
+    }
+
+    public function update($query, $values) {
+        $statement = $this->connection->prepare($query);
+        foreach ($values as $key => $value) {
+            if (is_int($key)) {
+                $statement->bindValue($key + 1, $value);
+            } else {
+                $statement->bindValue($key, $value);
             }
         }
         $statement->execute();

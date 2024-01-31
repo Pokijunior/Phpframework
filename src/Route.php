@@ -61,7 +61,8 @@ class Route {
                 $params[$paramName] = $uriParts[$key];
             }
         }
-
+        
+        var_dump($params);
         return [
             'match' => true,
             'params' => $params,
