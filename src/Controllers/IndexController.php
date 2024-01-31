@@ -33,7 +33,7 @@ class IndexController
         $connection = Connection::getInstance();
         $query = "SELECT * FROM users where id = ?";
         $values = [$params['id']];
-        $result = $connection->select($query, $values)->fetchAll();
+        $result = $connection->fetchAssocAll($query, $values);
         
         return new JsonResponse($result);
     }

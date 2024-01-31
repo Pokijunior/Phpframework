@@ -62,7 +62,6 @@ class Route {
             }
         }
         
-        var_dump($params);
         return [
             'match' => true,
             'params' => $params,

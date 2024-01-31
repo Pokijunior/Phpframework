@@ -25,7 +25,7 @@ class Connection {
         return $this->connection;
     }
     
-    public function select($query, $values) {
+    public function fetchAssoc($query, $values) {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
@@ -36,7 +36,21 @@ class Connection {
         }
 
         $statement->execute();
-        return $statement;
+        return $statement->fetch();
+    }
+
+    public function fetchAssocAll($query, $values) {
+        $statement = $this->connection->prepare($query);
+        foreach ($values as $key => $value) {
+            if (is_int($key)) {
+                $statement->bindValue($key + 1, $value);
+            } else {
+                $statement->bindValue($key, $value);
+            }
+        }
+
+        $statement->execute();
+        return $statement->fetchAll();
     }
     
     public function insert($query, $values) {
