@@ -31,31 +31,52 @@ class IndexController
     public static function indexSelectAction(Request $request, $params)
     {
         $connection = Connection::getInstance();
-        $query = "SELECT * FROM users where id = ?";
+        $query = "SELECT * FROM users where id = ? LIMIT 2";
         $values = [$params['id']];
         $result = $connection->select($query, $values)->fetchAssocAll();
         
         return new JsonResponse($result);
     }
 
-    public static function indexInsertAction(Request $request, $params)
+    public static function indexInsertAction(Request $request)
     {
         $connection = Connection::getInstance();
-        $query = "INSERT INTO users(id, name) VALUES (?,?)";
-        $values = [$params['id'], $params['name']];
-        $connection->insert($query, $values);
+        $requestData = json_decode(file_get_contents('php://input'), true);
 
-        return new JsonResponse("insertion success");
+        if (isset($requestData['users']) && is_array($requestData['users'])) {
+            $query = "INSERT INTO users(name) VALUES (?)";
+            // $query = "INSERT INTO users(name) VALUES (:name)";
+            foreach ($requestData['users'] as $user) {
+                $values = [$user['name']];
+                // $values = [':name' => $user['name']];
+                $connection->insert($query, $values);
+            }
+
+            return new JsonResponse("Insertion success");
+        } else {
+            return new JsonResponse("Invalid input data");
+        }
     }
 
-
-    public static function indexUpdateAction(Request $request, $params)
+    public static function indexUpdateAction()
     {
         $connection = Connection::getInstance();
-        $query = "UPDATE users SET name = ? WHERE id = ?";
-        $values = [$params['name'], $params['id']];
-        $connection->update($query, $values);
+        $requestData = json_decode(file_get_contents('php://input'), true);
 
-        return new JsonResponse("update success");
+        if (isset($requestData['users']) && is_array($requestData['users'])) {
+            $query = "UPDATE users SET name = ? WHERE id = ?";
+            foreach ($requestData['users'] as $user) {
+                if (isset($user['id']) && isset($user['name'])) {
+                    $values = [$user['name'], $user['id']];
+                    $connection->update($query, $values);
+                } else {
+                    return new JsonResponse("Invalid input data for update");
+                }
+            }
+
+            return new JsonResponse("Update success");
+        } else {
+            return new JsonResponse("Invalid input data");
+        }
     }
-}   
+}
