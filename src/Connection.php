@@ -3,11 +3,11 @@
 namespace Lovro\Phpframework;
 
 use PDO;
-use PDOException;
 
 class Connection {
     private static $instance = null;
     private $connection;
+    private $statement;
 
     private function __construct() {
         $this->connection = new PDO('mysql:host=localhost;dbname=factory', 'root', '', [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
@@ -25,34 +25,27 @@ class Connection {
         return $this->connection;
     }
     
-    public function fetchAssoc($query, $values) {
-        $statement = $this->connection->prepare($query);
+    public function select($query, $values) {
+        $this->statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
-                $statement->bindValue($key + 1, $value);
+                $this->statement->bindValue($key + 1, $value);
             } else {
-                $statement->bindValue($key, $value);
+                $this->statement->bindValue($key, $value);
             }
         }
+        $this->statement->execute();
+        return $this;
 
-        $statement->execute();
-        return $statement->fetch();
     }
 
-    public function fetchAssocAll($query, $values) {
-        $statement = $this->connection->prepare($query);
-        foreach ($values as $key => $value) {
-            if (is_int($key)) {
-                $statement->bindValue($key + 1, $value);
-            } else {
-                $statement->bindValue($key, $value);
-            }
-        }
-
-        $statement->execute();
-        return $statement->fetchAll();
+    public function fetchAssoc() {
+        return $this->statement->fetch();
     }
-    
+    public function fetchAssocAll() {
+        return $this->statement->fetchAll();
+    }
+
     public function insert($query, $values) {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
