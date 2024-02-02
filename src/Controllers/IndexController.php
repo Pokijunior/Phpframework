@@ -12,7 +12,6 @@ use Lovro\Phpframework\Request;
 
 class IndexController
 {
-    private $db;
 
     public static function indexAction($request)
     {
