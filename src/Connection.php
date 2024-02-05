@@ -9,20 +9,19 @@ class Connection {
     private $connection;
     private $statement;
 
-    private function __construct() {
-        $this->connection = new PDO('mysql:host=localhost;dbname=factory', 'root', '', [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+    private function __construct($config, $username='root', $password='') {
+        $dsn = 'mysql:' . http_build_query($config['database'], '', ';');
+        
+        $this->connection = new PDO($dsn, $username, $password, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
     }
 
     public static function getInstance() {
+        $config = require('config.php');
         if (self::$instance === null) {
-            self::$instance = new Connection();
+            self::$instance = new Connection($config);
         }
 
         return self::$instance;
-    }
-
-    public function getConnection() {
-        return $this->connection;
     }
     
     public function select($query, $values) {
@@ -30,8 +29,6 @@ class Connection {
         foreach ($values as $key => $value) {
             if (is_int($key)) {
                 $this->statement->bindValue($key + 1, $value);
-            } else {
-                $this->statement->bindValue($key, $value);
             }
         }
         $this->statement->execute();
@@ -70,5 +67,10 @@ class Connection {
         }
         $statement->execute();
         return $statement;
+    }
+
+    public function lastInsertId()
+    {
+        return $this->connection->lastInsertId();
     }
 }
