@@ -5,9 +5,7 @@ namespace Lovro\Phpframework\Controllers;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Lovro\Phpframework\Request;
-use Lovro\Phpframework\Connection;
 use Lovro\Phpframework\Models\User;
-use Lovro\Phpframework\Models\Model;
 use Lovro\Phpframework\Response\Response;
 use Lovro\Phpframework\Response\JsonResponse;
 
@@ -57,5 +55,25 @@ class IndexController
         $user->name = $requestData['users'][0]['name'];
         $user->save();
         return new JsonResponse($user->toArray());
+    }
+
+    public static function indexDeleteAction(Request $request, $params)
+    {
+        $user = User::delete($params['id']);
+        if($user) {
+            return new JsonResponse('Deleted user with id: ' . $params['id']);
+        } else {
+            return new JsonResponse('User with id: ' . $params['id'] . ' does not exist');
+        }
+    }
+    public static function indexSofDeleteAction(Request $request, $params)
+    {
+        $user = User::findById($params['id']);
+        if($user) {
+            $user->softDelete($params['id']);
+            return new JsonResponse('Soft Deleted user with id: ' . $params['id']);
+        } else {
+            return new JsonResponse('User with id: ' . $params['id'] . ' does not exist');
+        }
     }
 }

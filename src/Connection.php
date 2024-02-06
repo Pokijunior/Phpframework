@@ -33,7 +33,6 @@ class Connection {
         }
         $this->statement->execute();
         return $this;
-
     }
 
     public function fetchAssoc() {
@@ -57,6 +56,19 @@ class Connection {
     }
 
     public function update($query, $values) {
+        $statement = $this->connection->prepare($query);
+        foreach ($values as $key => $value) {
+            if (is_int($key)) {
+                $statement->bindValue($key + 1, $value);
+            } else {
+                $statement->bindValue($key, $value);
+            }
+        }
+        $statement->execute();
+        return $statement;
+    }
+
+    public function delete($query, $values) {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {

@@ -3,9 +3,12 @@
 namespace Lovro\Phpframework\Models;
 
 use Lovro\Phpframework\Connection;
+use Lovro\Phpframework\Traits\HasTimestamps;
 
 abstract class Model
 {
+    use HasTimestamps;
+
     protected array $columns = [];
 
     abstract static function getTableName();
@@ -18,13 +21,26 @@ abstract class Model
         return $this->columns[$name] = $value;
     }
 
-    function saveModel() {
-        Connection::getInstance()->insert('INSERT INTO ' . static::getTableName() . '(name) VALUES (?)', [$this->columns['name']]);
+    function saveModel() 
+    {
+        $this->enableTimestamps();
+        if($this->timestampsEnabled) {
+            $this->setCreatedAt();
+        }
+        
+        Connection::getInstance()->insert('INSERT INTO ' . static::getTableName() . '(name, created_at) VALUES (?,?)', [$this->columns['name'], $this->columns['created_at']]);
         $this->columns['id'] = Connection::getInstance()->lastInsertId();
     }
 
-    function updateModel() {
-        Connection::getInstance()->update('UPDATE users SET name = ? WHERE id = ?', [$this->columns['name'], $this->columns['id']]);
+    function updateModel() 
+    {
+        $this->enableTimestamps();
+        if($this->timestampsEnabled) {
+            $this->setUpdatedAt();
+        }
+
+        Connection::getInstance()->update('UPDATE users SET name = ?, updated_at = ? WHERE id = ?', [$this->columns['name'], $this->columns['updated_at'], $this->columns['id']]);
+        $this->columns['updated_at'] = date('Y-m-d H:i:s');
     }
 
 
@@ -44,6 +60,27 @@ abstract class Model
             return $model;
         } else {
             return new User();
+        }
+    }
+
+    public static function delete($id) {
+        $db = Connection::getInstance()->select('SELECT * FROM ' . static::getTableName() . ' WHERE id = ?', [$id])->fetchAssoc();
+        if ($db) {
+            Connection::getInstance()->select('DELETE FROM ' . static::getTableName() . ' WHERE id = ?', [$id]);
+            return true;
+        }
+    }
+
+    public  function softDelete($id) {
+        $db = Connection::getInstance()->select('SELECT * FROM ' . static::getTableName() . ' WHERE id = ?', [$id])->fetchAssoc();
+        if ($db)
+        {
+            $this->enableTimestamps();
+            if($this->timestampsEnabled) {
+                $this->setDeletedAt();
+            }
+
+            Connection::getInstance()->update('UPDATE users SET deleted_at = ? WHERE id = ?', [$this->columns['deleted_at'], $this->columns['id']]);
         }
     }
 
