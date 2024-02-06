@@ -4,13 +4,17 @@ namespace Lovro\Phpframework\Traits;
 
 trait HasTimestamps
 {
-    private bool $timestampsEnabled = false;
+    private bool $timestampsEnabled = true;
     
+    // public function enableTimestamps()
+    // {
+    //     $this->timestampsEnabled = true;
+    // }
 
-    public function enableTimestamps()
-    {
-        $this->timestampsEnabled = true;
-    }
+    // public function disableTimestamps()
+    // {
+    //     $this->timestampsEnabled = false;
+    // }
 
     public function setUpdatedAt() 
     {

@@ -13,38 +13,43 @@ abstract class Model
 
     abstract static function getTableName();
 
-    public function __get($name) {
+    public function __get($name) 
+    {
         return $this->columns[$name];
     }
 
-    public function __set($name, $value) {
+    public function __set($name, $value) 
+    {
         return $this->columns[$name] = $value;
     }
 
     function saveModel() 
     {
-        $this->enableTimestamps();
         if($this->timestampsEnabled) {
             $this->setCreatedAt();
+            Connection::getInstance()->insert('INSERT INTO ' . static::getTableName() . '(name, created_at) VALUES (?,?)', [$this->columns['name'], $this->columns['created_at']]);
+            $this->columns['id'] = Connection::getInstance()->lastInsertId();
+        } else {
+            Connection::getInstance()->insert('INSERT INTO ' . static::getTableName() . '(name) VALUES (?)', [$this->columns['name']]);
+            $this->columns['id'] = Connection::getInstance()->lastInsertId();
         }
         
-        Connection::getInstance()->insert('INSERT INTO ' . static::getTableName() . '(name, created_at) VALUES (?,?)', [$this->columns['name'], $this->columns['created_at']]);
-        $this->columns['id'] = Connection::getInstance()->lastInsertId();
+        
     }
 
     function updateModel() 
     {
-        $this->enableTimestamps();
         if($this->timestampsEnabled) {
             $this->setUpdatedAt();
+            Connection::getInstance()->update('UPDATE users SET name = ?, updated_at = ? WHERE id = ?', [$this->columns['name'], $this->columns['updated_at'], $this->columns['id']]);
+        } else {
+            Connection::getInstance()->update('UPDATE users SET name = ? WHERE id = ?', [$this->columns['name'], $this->columns['id']]);
         }
-
-        Connection::getInstance()->update('UPDATE users SET name = ?, updated_at = ? WHERE id = ?', [$this->columns['name'], $this->columns['updated_at'], $this->columns['id']]);
-        $this->columns['updated_at'] = date('Y-m-d H:i:s');
     }
 
 
-    public function save() {
+    public function save() 
+    {
         if(isset($this->columns['id']) && $this->columns['id'] !== null) {
             self::updateModel();
         } else {
@@ -52,36 +57,31 @@ abstract class Model
         }
     }
 
-    public static function findById($id) {
+    public static function findById($id) 
+    {
         $db = Connection::getInstance()->select('SELECT * FROM ' . static::getTableName() . ' WHERE id = ?', [$id])->fetchAssoc();
         if ($db) {
             $model = new static();
             $model->columns = $db;
             return $model;
         } else {
-            return new User();
+            return null;
         }
     }
 
-    public static function delete($id) {
-        $db = Connection::getInstance()->select('SELECT * FROM ' . static::getTableName() . ' WHERE id = ?', [$id])->fetchAssoc();
-        if ($db) {
-            Connection::getInstance()->select('DELETE FROM ' . static::getTableName() . ' WHERE id = ?', [$id]);
-            return true;
-        }
+    public static function delete($id) 
+    {
+        Connection::getInstance()->select('DELETE FROM ' . static::getTableName() . ' WHERE id = ?', [$id]);
     }
 
-    public  function softDelete($id) {
-        $db = Connection::getInstance()->select('SELECT * FROM ' . static::getTableName() . ' WHERE id = ?', [$id])->fetchAssoc();
-        if ($db)
-        {
-            $this->enableTimestamps();
-            if($this->timestampsEnabled) {
-                $this->setDeletedAt();
-            }
-
+    public  function softDelete($id) 
+    {
+        if($this->timestampsEnabled) {
+            $this->setDeletedAt();
             Connection::getInstance()->update('UPDATE users SET deleted_at = ? WHERE id = ?', [$this->columns['deleted_at'], $this->columns['id']]);
         }
+
+
     }
 
     public function toArray() {

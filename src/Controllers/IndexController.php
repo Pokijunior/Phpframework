@@ -3,8 +3,8 @@
 namespace Lovro\Phpframework\Controllers;
 
 use Twig\Environment;
-use Twig\Loader\ArrayLoader;
 use Lovro\Phpframework\Request;
+use Twig\Loader\FilesystemLoader;
 use Lovro\Phpframework\Models\User;
 use Lovro\Phpframework\Response\Response;
 use Lovro\Phpframework\Response\JsonResponse;
@@ -14,10 +14,10 @@ class IndexController
 
     public static function indexAction($request)
     {
-        $loader = new ArrayLoader(['index' => '<p>TWIG</p>']);
+        $loader = new FilesystemLoader(__DIR__ . '/../templates');
         $twig = new Environment($loader);
         
-        return new Response($twig->render('index'));
+        return new Response($twig->render('index.twig'));
     }
 
     public static function indexJsonAction($request)
@@ -59,8 +59,9 @@ class IndexController
 
     public static function indexDeleteAction(Request $request, $params)
     {
-        $user = User::delete($params['id']);
+        $user = User::findById($params['id']);
         if($user) {
+            User::delete($params['id']);
             return new JsonResponse('Deleted user with id: ' . $params['id']);
         } else {
             return new JsonResponse('User with id: ' . $params['id'] . ' does not exist');
