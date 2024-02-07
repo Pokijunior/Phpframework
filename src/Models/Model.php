@@ -74,14 +74,14 @@ abstract class Model
         Connection::getInstance()->select('DELETE FROM ' . static::getTableName() . ' WHERE id = ?', [$id]);
     }
 
-    public  function softDelete($id) 
+    public  function softDelete() 
     {
         if($this->timestampsEnabled) {
             $this->setDeletedAt();
             Connection::getInstance()->update('UPDATE users SET deleted_at = ? WHERE id = ?', [$this->columns['deleted_at'], $this->columns['id']]);
+        } else {
+            return null;
         }
-
-
     }
 
     public function toArray() {

@@ -39,5 +39,6 @@ Route::get('/select/{id}',[IndexController::class, 'indexSelectAction']);
 
 Route::post('/insert',[IndexController::class, 'indexInsertAction']);
 Route::post('/update',[IndexController::class, 'indexUpdateAction']);
+Route::post('/updatewithtimestamps',[IndexController::class, 'indexUpdateWithTimeStampsAction']);
 Route::post('/delete/{id}',[IndexController::class, 'indexDeleteAction']);
 Route::post('/softdelete/{id}',[IndexController::class, 'indexSofDeleteAction']);

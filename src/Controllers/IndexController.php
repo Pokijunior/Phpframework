@@ -29,14 +29,14 @@ class IndexController
     public static function indexSelectAction(Request $request, $params)
     {
         $user = User::findById($params['id']);
-        if($user->toArray() === []) {
+        if($user === NULL) {
             return new JsonResponse('There is no user with id: ' . $params['id']);
         } else {
             return new JsonResponse($user->toArray());
         }
     }
 
-    public static function indexInsertAction(Request $request)
+    public static function indexInsertAction()
     {
         $requestData = json_decode(file_get_contents('php://input'), true);
 
@@ -48,6 +48,25 @@ class IndexController
 
 
     public static function indexUpdateAction()
+    {
+        $requestData = json_decode(file_get_contents('php://input'), true);
+
+        $user = User::findById($requestData['users'][0]['id']);
+        if($user === NULL) {
+            $user = new User();
+            $user->name = $requestData['users'][0]['name'];
+            $user->save();
+            return new JsonResponse($user->toArray());
+        } else {
+            $user->disableTimestamps();
+            $user->name = $requestData['users'][0]['name'];
+            $user->save();
+            return new JsonResponse($user->toArray());
+        }
+        
+    }
+
+    public static function indexUpdateWithTimeStampsAction()
     {
         $requestData = json_decode(file_get_contents('php://input'), true);
 
@@ -68,10 +87,10 @@ class IndexController
         }
     }
     public static function indexSofDeleteAction(Request $request, $params)
-    {
+    {   
         $user = User::findById($params['id']);
         if($user) {
-            $user->softDelete($params['id']);
+            $user->softDelete();
             return new JsonResponse('Soft Deleted user with id: ' . $params['id']);
         } else {
             return new JsonResponse('User with id: ' . $params['id'] . ' does not exist');
