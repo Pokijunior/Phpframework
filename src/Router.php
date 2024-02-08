@@ -9,8 +9,8 @@ use Lovro\Phpframework\Interfaces\ResponseInterface;
 
 class Router
 {
-    private static $routes = [];
-    public static function addRoute(Route $route)
+    private static array $routes = [];
+    public static function addRoute(Route $route): void
     {
         self::$routes[] = $route;
     }

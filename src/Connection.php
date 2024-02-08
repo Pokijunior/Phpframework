@@ -2,14 +2,15 @@
 
 namespace Lovro\Phpframework;
 
-use Dotenv\Dotenv;
 use PDO;
+use PDOStatement;
+use Dotenv\Dotenv;
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 class Connection {
-    private static $instance = null;
-    private $connection;
+    private static ?Connection $instance = null;
+    private ?PDO $connection;
     private $statement;
 
     private function __construct() {
@@ -18,7 +19,8 @@ class Connection {
         $this->connection = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS'], [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
     }
 
-    public static function getInstance() {
+    public static function getInstance(): Connection
+    {
         if (self::$instance === null) {
             self::$instance = new Connection();
         }
@@ -26,7 +28,8 @@ class Connection {
         return self::$instance;
     }
     
-    public function select($query, $values) {
+    public function select($query, $values): self
+    {
         $this->statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
@@ -37,14 +40,19 @@ class Connection {
         return $this;
     }
 
-    public function fetchAssoc() {
-        return $this->statement->fetch();
+    public function fetchAssoc(): ?array
+    {
+        $result = $this->statement->fetch();
+        return ($result !== false) ? $result : null;
     }
-    public function fetchAssocAll() {
-        return $this->statement->fetchAll();
+    public function fetchAssocAll(): ?array
+    {
+        $result = $this->statement->fetchAll();
+        return ($result !== false) ? $result : null;
     }
 
-    public function insert($query, $values) {
+    public function insert(string $query, array $values): PDOStatement
+    {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
@@ -57,7 +65,8 @@ class Connection {
         return $statement;
     }
 
-    public function update($query, $values) {
+    public function update(string $query, array $values): PDOStatement
+    {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
@@ -70,7 +79,8 @@ class Connection {
         return $statement;
     }
 
-    public function delete($query, $values) {
+    public function delete(string $query, array $values): PDOStatement
+    {
         $statement = $this->connection->prepare($query);
         foreach ($values as $key => $value) {
             if (is_int($key)) {
@@ -83,7 +93,7 @@ class Connection {
         return $statement;
     }
 
-    public function lastInsertId()
+    public function lastInsertId(): ?string
     {
         return $this->connection->lastInsertId();
     }

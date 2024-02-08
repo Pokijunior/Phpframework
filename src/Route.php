@@ -4,39 +4,46 @@ namespace Lovro\Phpframework;
 
 
 class Route {
-    private $method;
-    private $uri;
+    private string $method;
+    private string $uri;
     private $callback;
 
-    public function __construct($method, $uri, $callback){
+    public function __construct(string $method, string $uri, $callback)
+    {
         $this->method = $method;
         $this->uri = $uri;
         $this->callback = $callback;
     }
 
-    public static function add($method, $uri, $callback) {
+    public static function add(string $method, string $uri, $callback)
+    {
         Router::addRoute(new Route($method, $uri, $callback));
     }
 
-    public static function get($uri, $callback) {
+    public static function get(string $uri, $callback): void
+    {
         self::add('GET', $uri, $callback);
     }
 
-    public static function post($uri, $callback) {
+    public static function post(string $uri, $callback): void
+    {
         self::add('POST', $uri, $callback);
     }
 
-    public function getUri() {
+    public function getUri(): string
+    {
         return $this->uri;
     }
-    public function getMethod() {
+    public function getMethod(): string
+    {
         return $this->method;
     }
-    public function getCallback() {
+    public function getCallback()
+    {
         return $this->callback;
     }
 
-    public static function match($route, $uri, $method)
+    public static function match(Route $route, string $uri, string $method): array
     {
         $routeUriParts = explode('/', trim($route->getUri(), '/'));
         $uriParts = explode('/', trim($uri, '/'));
@@ -48,7 +55,7 @@ class Route {
         }
     }
 
-    public static function matchParams($routeUriParts, $uriParts) 
+    public static function matchParams(array $routeUriParts, array  $uriParts): array
     {
         $params = [];
         foreach ($routeUriParts as $key => $part) {

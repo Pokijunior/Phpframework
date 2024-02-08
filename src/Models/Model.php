@@ -35,7 +35,7 @@ abstract class Model
         }
     }
 
-    function updateModel($id, $name): void
+    function updateModel(int $id=null, string $name=null): void
     {
         if($this->timestampsEnabled) {
             $this->setUpdatedAt();
@@ -45,7 +45,7 @@ abstract class Model
         }
     }
 
-    public function save($id=null, $name=null): void
+    public function save(int $id=null, string $name=null): void
     {
         if(isset($this->columns['id']) && $this->columns['id'] !== null) {
             self::updateModel($id, $name);
