@@ -4,7 +4,7 @@ namespace Lovro\Phpframework;
 
 use Dotenv\Dotenv;
 use PDO;
-$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 class Connection {
