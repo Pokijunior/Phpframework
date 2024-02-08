@@ -5,12 +5,12 @@ use Lovro\Phpframework\Response\Response;
 use Lovro\Phpframework\Response\JsonResponse;
 use Lovro\Phpframework\Controllers\IndexController;
 
-Route::get('/', function (Request $request): Response
+Route::get('/', function (): Response
 {
     return new Response('Home');
 });
 
-Route::get('/products', function (Request $request): Response
+Route::get('/products', function (): Response
 {
     return new Response('Products');
 });
@@ -38,7 +38,7 @@ Route::get('/json',[IndexController::class, 'indexJsonAction']);
 Route::get('/select/{id}',[IndexController::class, 'indexSelectAction']);
 
 Route::post('/insert',[IndexController::class, 'indexInsertAction']);
-Route::post('/update',[IndexController::class, 'indexUpdateAction']);
+Route::post('/update/{id}/{name}',[IndexController::class, 'indexUpdateAction']);
 Route::post('/updatewithtimestamps',[IndexController::class, 'indexUpdateWithTimeStampsAction']);
 Route::post('/delete/{id}',[IndexController::class, 'indexDeleteAction']);
 Route::post('/softdelete/{id}',[IndexController::class, 'indexSofDeleteAction']);

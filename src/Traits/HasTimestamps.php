@@ -6,10 +6,6 @@ trait HasTimestamps
 {
     protected bool $timestampsEnabled = true;
     
-    // public function enableTimestamps()
-    // {
-    //     $this->timestampsEnabled = true;
-    // }
 
     public function disableTimestamps()
     {

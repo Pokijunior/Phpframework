@@ -6,9 +6,9 @@ use Lovro\Phpframework\Interfaces\ResponseInterface;
 
 class Response implements ResponseInterface
 {
-    private $content;
+    private string $content;
 
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->content = $content;
     }

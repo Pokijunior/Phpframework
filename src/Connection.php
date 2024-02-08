@@ -2,23 +2,25 @@
 
 namespace Lovro\Phpframework;
 
+use Dotenv\Dotenv;
 use PDO;
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 class Connection {
     private static $instance = null;
     private $connection;
     private $statement;
 
-    private function __construct($config, $username='root', $password='') {
-        $dsn = 'mysql:' . http_build_query($config['database'], '', ';');
+    private function __construct() {
+        $dsn = 'mysql:host=' . $_ENV['DB_HOST'] . ';port=' . $_ENV['DB_PORT'] . ';dbname=' . $_ENV['DB_NAME'];
         
-        $this->connection = new PDO($dsn, $username, $password, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+        $this->connection = new PDO($dsn, $_ENV['DB_USER'], $_ENV['DB_PASS'], [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
     }
 
     public static function getInstance() {
-        $config = require('config.php');
         if (self::$instance === null) {
-            self::$instance = new Connection($config);
+            self::$instance = new Connection();
         }
 
         return self::$instance;

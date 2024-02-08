@@ -6,9 +6,9 @@ use Lovro\Phpframework\Interfaces\ResponseInterface;
 
 class JsonResponse implements ResponseInterface
 {
-    private $contet;
+    private array $contet;
 
-    public function __construct($content)
+    public function __construct(array $content)
     {
         $this->contet = $content;
     }

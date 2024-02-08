@@ -11,19 +11,19 @@ abstract class Model
 
     protected array $columns = [];
 
-    abstract static function getTableName();
+    abstract static function getTableName(): string;
 
-    public function __get($name) 
+    public function __get($name): mixed
     {
-        return $this->columns[$name];
+        return $this->columns[$name] ?? null;
     }
 
-    public function __set($name, $value) 
+    public function __set($name, $value)
     {
         return $this->columns[$name] = $value;
     }
 
-    function saveModel() 
+    function saveModel(): void
     {
         if($this->timestampsEnabled) {
             $this->setCreatedAt();
@@ -33,31 +33,28 @@ abstract class Model
             Connection::getInstance()->insert('INSERT INTO ' . static::getTableName() . '(name) VALUES (?)', [$this->columns['name']]);
             $this->columns['id'] = Connection::getInstance()->lastInsertId();
         }
-        
-        
     }
 
-    function updateModel() 
+    function updateModel($id, $name): void
     {
         if($this->timestampsEnabled) {
             $this->setUpdatedAt();
             Connection::getInstance()->update('UPDATE users SET name = ?, updated_at = ? WHERE id = ?', [$this->columns['name'], $this->columns['updated_at'], $this->columns['id']]);
         } else {
-            Connection::getInstance()->update('UPDATE users SET name = ? WHERE id = ?', [$this->columns['name'], $this->columns['id']]);
+            Connection::getInstance()->update('UPDATE users SET name = ? WHERE id = ?', [$name, $id]);
         }
     }
 
-
-    public function save() 
+    public function save($id=null, $name=null): void
     {
         if(isset($this->columns['id']) && $this->columns['id'] !== null) {
-            self::updateModel();
+            self::updateModel($id, $name);
         } else {
             self::saveModel();
         }
     }
 
-    public static function findById($id) 
+    public static function findById(int $id): ?static
     {
         $db = Connection::getInstance()->select('SELECT * FROM ' . static::getTableName() . ' WHERE id = ?', [$id])->fetchAssoc();
         if ($db) {
@@ -69,12 +66,13 @@ abstract class Model
         }
     }
 
-    public static function delete($id) 
+    public static function delete(int $id): void
     {
-        Connection::getInstance()->select('DELETE FROM ' . static::getTableName() . ' WHERE id = ?', [$id]);
+        Connection::getInstance()->delete('DELETE FROM ' . static::getTableName() . ' WHERE id = ?', [$id]);
     }
 
-    public  function softDelete() 
+
+    public  function softDelete() //tip povratne vrijednosti
     {
         if($this->timestampsEnabled) {
             $this->setDeletedAt();
@@ -84,7 +82,7 @@ abstract class Model
         }
     }
 
-    public function toArray() {
+    public function toArray(): array {
         return $this->columns;
     }
 }
